@@ -3,7 +3,8 @@ from fastapi import FastAPI
 import uvicorn
 from dotenv import dotenv_values
 from pymongo import MongoClient
-# from routes.api import router as api_router
+from routes.api import router as api_router
+
 config = dotenv_values(".env")
 
 @asynccontextmanager
@@ -19,8 +20,7 @@ async def lifespan(app: FastAPI):
     print("INFO:     Database disconnected.")
 
 app = FastAPI(lifespan=lifespan)
-
-# app.include_router(api_router)
+app.include_router(api_router)
 
 if __name__ == '__main__':
     uvicorn.run(
