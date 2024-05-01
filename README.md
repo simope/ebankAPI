@@ -10,6 +10,10 @@ I started this project to learn and practice with FastAPI and MongoDB. The plan 
 | --- | --- | --- |
 | GET | /users | List the users present in the DB |
 | POST | /users | Create a new user |
+| GET | /users/id | Find user with a specific id |
+| DELETE | /users/id | Delete user with a specific id |
+| POST | /transfer | Create a new transfer |
+
 
 ## Testing
 To test, use a terminal to launch the the back-end with:
