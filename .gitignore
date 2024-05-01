@@ -1,3 +1,4 @@
 .env
 .bankenv/
 __pycache__
+.pytest_cache
