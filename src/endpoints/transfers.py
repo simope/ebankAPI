@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, status, Body
 from typing import List
 from src.models.transfers import Transfer
 
-import src.rules.transfers as transfers
+import src.schemas.transfers as transfers
 
 router = APIRouter(prefix="/transfers",
     tags=["Transfers"])

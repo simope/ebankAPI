@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from src.endpoints import users, transfers
+from src.endpoints import users
 
 router = APIRouter()
 router.include_router(users.router)
-router.include_router(transfers.router)
+# router.include_router(transfers.router)

@@ -16,10 +16,6 @@ I started this project to learn and practice with FastAPI and MongoDB. The plan 
 
 
 ## Testing
-To test, use a terminal to launch the the back-end with:
-
-    uvicorn main:app --reload
-
-On another terminal window, launch the automated tests with:
+Open the terminal, change directory to the root of the project and launch the tests with:
 
     pytest -v
