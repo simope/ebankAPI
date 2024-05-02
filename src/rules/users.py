@@ -22,6 +22,15 @@ def find_user(request: Request, id: UUID):
         return user
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with id {id} not found.")
 
+def update_user(request: Request, id: UUID, user: User = Body(...)):
+    update_result = get_collection_users(request).update_one({"_id": id}, {"$set": user})
+    
+    if update_result.modified_count == 0:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User not found.")
+
+    if (existing_user := get_collection_users(request).find_one({"_id": user.id})) is not None:
+        return existing_user
+
 def delete_user(request: Request, id: UUID):
     deleted_user = get_collection_users(request).delete_one({"_id": id})
 

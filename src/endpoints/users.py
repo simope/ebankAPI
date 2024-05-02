@@ -19,6 +19,10 @@ def list_users(request: Request):
 def find_user(request: Request, id: str):
     return users.find_user(request, id)
 
+@router.put("/{id}", response_description="Update a user by id", response_model=User)
+def update_user(request: Request, id: str, user: User):
+    return users.update_user(request, id, user)
+
 @router.delete("/{id}", response_description="Delete a user by id")
 def delete_user(request: Request, id: str):
     return users.delete_user(request, id)
