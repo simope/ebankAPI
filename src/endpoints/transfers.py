@@ -8,7 +8,7 @@ router = APIRouter(prefix="/transfers",
     tags=["Transfers"])
 
 @router.post("/", response_description="Create a new transfer", status_code=status.HTTP_201_CREATED, response_model=Transfer)
-def create_user(request: Request, user: Transfer = Body(...)):  
+def create_transfer(request: Request, user: Transfer = Body(...)):  
     return transfers.create_transfer(request,user)
 
 # @router.get("/", response_description="List transfers", response_model=List[Transfer])
