@@ -6,7 +6,7 @@ from sqlalchemy.pool import StaticPool
 from database import Base, get_db
 from main import app
 
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:ibanez2010@localhost/ebank"
+SQLALCHEMY_DATABASE_URL = "postgresql://postgres:mypassword@localhost/ebank"
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
