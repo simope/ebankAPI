@@ -2,7 +2,7 @@
 
 Work in progress.
 
-I started this project to learn and practice with FastAPI and MongoDB. The plan is to have an API that accesses a DB with information about currency transactions between users and users themselves.
+I started this project to learn and practice with FastAPI and PostgreSQL. The plan is to have an API that accesses a DB with information about currency transactions between users and users themselves.
 
 ### API Endpoints
 
