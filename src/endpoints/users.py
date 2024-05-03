@@ -1,17 +1,9 @@
 from fastapi import Depends, APIRouter, status, HTTPException, Response
 from sqlalchemy.orm import Session
-from typing import List
 from src.schemas.users import CreateUser
 from src.models.users import User
 from database import get_db
 
-# from fastapi import APIRouter, Request, status, Depends
-# from sqlalchemy.orm import Session
-# from typing import List
-# from src.models.users import User, UserCreate
-# from uuid import UUID
-# import src.schemas.users as users
-# from main import get_db
 
 router = APIRouter(prefix="/users",
     tags=["Users"])
@@ -48,7 +40,7 @@ def create_user(user_user: CreateUser, db: Session = Depends(get_db)):
 
 # PUT
 @router.put("/{id}")
-def update(id: int, user: CreateUser, db:Session = Depends(get_db)):
+def update_user(id: int, user: CreateUser, db:Session = Depends(get_db)):
     updated_user = db.query(User).filter(User.id == id)
     if updated_user == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'post with such id: {id} does not exist')

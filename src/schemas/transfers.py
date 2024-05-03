@@ -1,12 +1,21 @@
-from fastapi import Request, Body
-from fastapi.encoders import jsonable_encoder
-from src.models.transfers import Transfer
+from pydantic import BaseModel, ConfigDict, field_validator
 
-def get_collection_transfer(request: Request):
-    return request.app.database["transfers"]
+allowed = ['EUR', 'USD', 'GBP']
+class TransferBase(BaseModel):
+    id: int
+    sender_id: int
+    recipient_id: int
+    currency: str
+    amount: float
 
-def create_transfer(request: Request, transfer: Transfer = Body(...)):
-    transfer = jsonable_encoder(transfer)
-    new_transfer = get_collection_transfer(request).insert_one(transfer)
-    created_transfer = get_collection_transfer(request).find_one({"_id": new_transfer.inserted_id})
-    return created_transfer
+    model_config = ConfigDict(from_attributes=True)
+
+    @field_validator('currency')
+    @classmethod
+    def currency_is_allowed(cls, curr: str) -> str:
+        if curr not in allowed:
+            raise ValueError('use a supported currency! You used '+curr)
+        return curr
+
+class CreateTransfer(TransferBase):
+    model_config = ConfigDict(from_attributes=True)

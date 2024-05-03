@@ -1,24 +1,16 @@
-from uuid import uuid4, UUID
-from pydantic import ConfigDict, BaseModel, Field, field_validator
+from sqlalchemy import Column, String, Integer, Float, ForeignKey
+from sqlalchemy.orm import relationship
+from database import Base
 
 allowed_currencies = ['EUR', 'GBP', 'USD']
 
-class Transfer(BaseModel):
-    id: UUID = Field(default_factory=uuid4, alias="_id")
-    sender_id: str
-    recipient_id: str
-    currency: str
-    amount: float
-    model_config = ConfigDict(populate_by_name=True, json_schema_extra={
-        "example": {
-            "sender_id": "a050f695-9b4d-4b85-95bc-efc79c394f0e",
-            "recipient_id": "9098ed75-a320-4964-8bbe-b49e27fe3256",
-            "currency": "EUR",
-            "amount": 30.5
-        }
-    })
+class Transfer(Base):
+    __tablename__ = "transfers"
+    id = Column(Integer, primary_key=True)
+    sender_id = Column(Integer, ForeignKey("users.id"))
+    recipient_id = Column(Integer, ForeignKey("users.id"))
+    currency = Column(String)
+    amount = Column(Float)
 
-    @field_validator('currency')
-    def allowed_currency(cls, currency):
-        assert currency in allowed_currencies, f'must be an allowed currency, was {currency}'
-        return currency
+    sender = relationship("User", backref="sender_users", foreign_keys=[sender_id])
+    recipient = relationship("User", backref="recipient_users", foreign_keys=[recipient_id])
