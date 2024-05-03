@@ -1,28 +1,65 @@
-from fastapi import APIRouter, Request, status, Body
-from typing import List
+from fastapi import Depends, APIRouter, status, HTTPException, Response
+from sqlalchemy.orm import Session
+from src.schemas.users import CreateUser
 from src.models.users import User
-from uuid import UUID
-import src.rules.users as users
+from database import get_db
+
 
 router = APIRouter(prefix="/users",
     tags=["Users"])
 
-@router.post("/", response_description="Create a new user", status_code=status.HTTP_201_CREATED, response_model=User)
-def create_user(request: Request, user: User = Body(...)):  
-    return users.create_user(request,user)
+# GET ALL
+@router.get("/")
+def list_users(db: Session = Depends(get_db)):
+    all_users = db.query(User).all()
+    return all_users
 
-@router.get("/", response_description="List users", response_model=List[User])
-def list_users(request: Request):
-    return users.list_users(request, 100)
+# GET ONE
+@router.get("/{id}")
+def get_user(id: int, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == id).first()
+    if user == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            details=f"User with such id not found")
+    else:
+        return user
 
-@router.get("/{id}", response_description="Get user by id", response_model=User)
-def find_user(request: Request, id: str):
-    return users.find_user(request, id)
+# POST
+@router.post(
+        "/",
+        response_description="Create a new user",
+        status_code=status.HTTP_201_CREATED,
+        response_model=CreateUser
+        )
+def create_user(user_user: CreateUser, db: Session = Depends(get_db)):
+    new_user = User(**user_user.model_dump())
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
 
-@router.put("/{id}", response_description="Update a user by id", response_model=User)
-def update_user(request: Request, id: str, user: User):
-    return users.update_user(request, id, user)
+# PUT
+@router.put("/{id}")
+def update_user(id: int, user: CreateUser, db:Session = Depends(get_db)):
+    updated_user = db.query(User).filter(User.id == id)
+    if updated_user == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'post with such id: {id} does not exist')
+    else:
+        updated_user.update(user.model_dump(), synchronize_session=False)
+        db.commit()
+    return updated_user.first()
 
-@router.delete("/{id}", response_description="Delete a user by id")
-def delete_user(request: Request, id: str):
-    return users.delete_user(request, id)
+# DELETE
+@router.delete(
+        "/{id}",
+        status_code=status.HTTP_204_NO_CONTENT
+        )
+def delete_user(id: int, db: Session = Depends(get_db)):
+    delete_post = db.query(User).filter(User.id == id)
+    if delete_post == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            details=f"User with such id not found")
+    else:
+        delete_post.delete(synchronize_session=False)
+        db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
