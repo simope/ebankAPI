@@ -50,7 +50,6 @@ def create_user(user_user: CreateUser, db: Session = Depends(get_db)):
 @router.put("/{id}")
 def update(id: int, user: CreateUser, db:Session = Depends(get_db)):
     updated_user = db.query(User).filter(User.id == id)
-    # updated_user.first()
     if updated_user == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'post with such id: {id} does not exist')
     else:
